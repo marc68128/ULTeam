@@ -1,0 +1,32 @@
+﻿<Window x:Class="ULTeam.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:ULTeam"
+        mc:Ignorable="d"
+        Title="MainWindow" Height="350" Width="525">
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*"></ColumnDefinition>
+            <ColumnDefinition Width="*"></ColumnDefinition>
+            <ColumnDefinition Width="*"></ColumnDefinition>
+        </Grid.ColumnDefinitions>
+
+
+        <Image Margin="20" Grid.Column="0" Stretch="UniformToFill" HorizontalAlignment="Center" Source="Images/portrai.png"></Image>
+        <Image Margin="20" Grid.Column="1" Stretch="UniformToFill" HorizontalAlignment="Center" Source="Images/portrai.png"></Image>
+        <Image Margin="20" Grid.Column="2" Stretch="UniformToFill" HorizontalAlignment="Center" Source="Images/portrai.png"></Image>
+
+        <ProgressBar Margin="2" MouseLeftButtonUp="SelectSkydiver" Foreground="LightSkyBlue"  Opacity="0.8" Grid.Column="0" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" Orientation="Vertical" Maximum="10" Value="8" x:Name="RenaudProgressBar" />
+        <ProgressBar Margin="2" MouseLeftButtonUp="SelectSkydiver" Foreground="LightSkyBlue"  Opacity="0.8" Grid.Column="1" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" Orientation="Vertical" Maximum="10" Value="8" x:Name="TomProgressBar" />
+        <ProgressBar Margin="2" MouseLeftButtonUp="SelectSkydiver" Foreground="LightSkyBlue"  Opacity="0.8" Grid.Column="2" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" Orientation="Vertical" Maximum="10" Value="8" x:Name="MarcProgressBar"/>
+
+        <Border Grid.Column="0" Visibility="Collapsed" BorderThickness="2" BorderBrush="Black" x:Name="RenaudBorder"></Border>
+        <Border Grid.Column="1" Visibility="Collapsed" BorderThickness="2" BorderBrush="Black" x:Name="TomBorder"></Border>
+        <Border Grid.Column="2" Visibility="Collapsed" BorderThickness="2" BorderBrush="Black" x:Name="MarcBorder"></Border>
+
+
+
+    </Grid>
+</Window>
