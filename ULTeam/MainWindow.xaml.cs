@@ -84,7 +84,12 @@ namespace ULTeam
             {
                 var videoPath = videoPaths[index];
                 CustomFileCopier fileCopier = new CustomFileCopier(videoPath, extPath);
+                fileCopier.OnProgressChanged += (double persentage, ref bool cancel) =>
+                {
+
+                };
                 extPath = Path.Combine(Path.GetDirectoryName(extPath), _selectedSkydiver + (index + 1) + ".mp4");
+                fileCopier.Copy();
             }
         }
     }
