@@ -18,13 +18,23 @@ namespace ULTeam
     public partial class MainWindow : Window
     {
         private List<DriveInfo> _drives;
-        private string _selectedDrive;
         private Skydiver _selectedSkydiver;
+        private int _currentJumpNumber;
+
+        private string _todayPath => $"{DateTime.Today.Year}/{DateTime.Today.ToString("MMMM", CultureInfo.GetCultureInfo("fr-FR"))}/{DateTime.Today.Day}";
+
 
         public MainWindow()
         {
             InitializeComponent();
-            _drives = DriveInfo.GetDrives().Where(d => d.DriveType == DriveType.Removable).ToList();
+            _currentJumpNumber = 1;
+            if (Directory.Exists(_todayPath) && Directory.GetDirectories(_todayPath).Length > 0)
+            {
+                _currentJumpNumber = Directory.GetDirectories(_todayPath)
+                    .Select(d => int.Parse(new string(Path.GetFileName(d).Where(char.IsDigit).ToArray())))
+                    .Max() + 1;
+            }
+            JumpNumberTextBlock.Text = "Saut " + _currentJumpNumber;
         }
 
         private void SelectSkydiver(object sender, MouseButtonEventArgs e)
@@ -46,6 +56,7 @@ namespace ULTeam
                     throw new ArgumentOutOfRangeException();
             }
 
+            _drives = DriveInfo.GetDrives().Where(d => d.DriveType == DriveType.Removable).ToList();
             ListenDrive();
         }
 
@@ -58,10 +69,10 @@ namespace ULTeam
                     var drives = DriveInfo.GetDrives().Where(d => d.DriveType == DriveType.Removable).ToList();
                     if (drives.Count > _drives.Count)
                     {
-                        var addedDrive = drives.Except(_drives).First();
+                        var addedDrive = drives.First(d => _drives.All(d2 => d2.RootDirectory.Name != d.RootDirectory.Name));
                         _drives = drives;
                         DriveAdded(addedDrive);
-                        continue;
+                        return;
                     }
                     if (drives.Count < _drives.Count)
                     {
@@ -73,24 +84,49 @@ namespace ULTeam
 
         private void DriveAdded(DriveInfo addedDrive)
         {
-            var drivePath = addedDrive.RootDirectory.FullName;
-            List<string> videoPaths = new List<string>(); //TODO Find vidéos in gopro root folder
-
-            var extPath = $"/{DateTime.Today.Year}/{DateTime.Today.ToString("MMMM", CultureInfo.GetCultureInfo("fr-FR"))}/{DateTime.Today.Day}";
-            var jumpNumber = Directory.GetDirectories(extPath).Select(d => int.Parse(d.Replace("Saut", ""))).Max() + 1;
-            extPath = Path.Combine(extPath, "Saut" + jumpNumber, _selectedSkydiver + ".mp4");
-
-            for (var index = 0; index < videoPaths.Count; index++)
+            Dispatcher.Invoke(() =>
             {
-                var videoPath = videoPaths[index];
-                CustomFileCopier fileCopier = new CustomFileCopier(videoPath, extPath);
-                fileCopier.OnProgressChanged += (double persentage, ref bool cancel) =>
-                {
+                RenaudBorder.Visibility = TomBorder.Visibility = MarcBorder.Visibility = Visibility.Collapsed;
+            });
+            var selectedSkydiver = _selectedSkydiver;
+            var drivePath = addedDrive.RootDirectory.FullName;
+            List<string> videoPaths = Directory.GetFiles(Path.Combine(drivePath, "DCIM", "101GOPRO"), "*.MP4").ToList();
 
-                };
-                extPath = Path.Combine(Path.GetDirectoryName(extPath), _selectedSkydiver + (index + 1) + ".mp4");
-                fileCopier.Copy();
-            }
+            //TODO: CHECK NUMBER OF FILES AND SKIP IF > 4
+
+            Directory.CreateDirectory(_todayPath);
+            var extPath = Path.Combine(_todayPath, "Saut" + _currentJumpNumber);
+            Directory.CreateDirectory(extPath);
+
+            MultipleFileCopier copier = new MultipleFileCopier(videoPaths.Select((s, i) => new Copy(s, Path.Combine(extPath, _selectedSkydiver + (i > 1 ? "_" + i : "") + ".mp4"))).ToList());
+            copier.OnProgressChanged += (double persentage, ref bool cancel) =>
+            {
+                switch (selectedSkydiver)
+                {
+                    case Skydiver.Renaud:
+                        Dispatcher.Invoke(() => { RenaudProgressBar.Value = persentage; });
+                        break;
+                    case Skydiver.Tom:
+                        Dispatcher.Invoke(() => { TomProgressBar.Value = persentage; });
+                        break;
+                    case Skydiver.Marc:
+                        Dispatcher.Invoke(() => { MarcProgressBar.Value = persentage; });
+                        break;
+                    default:
+                        throw new ArgumentOutOfRangeException();
+                }
+            };
+            copier.Copy();
+        }
+
+        private void NewJump(object sender, RoutedEventArgs e)
+        {
+            JumpNumberTextBlock.Text = "Saut " + ++_currentJumpNumber;
+            Dispatcher.Invoke(() =>
+            {
+                RenaudBorder.Visibility = TomBorder.Visibility = MarcBorder.Visibility = Visibility.Collapsed;
+                RenaudProgressBar.Value = TomProgressBar.Value = MarcProgressBar.Value = 0;
+            });
         }
     }
 }

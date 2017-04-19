@@ -5,28 +5,34 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:ULTeam"
         mc:Ignorable="d"
-        Title="MainWindow" Height="350" Width="525">
+        Title="MainWindow" Height="350" Width="525" Background="Gray">
     <Grid>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="*"></ColumnDefinition>
             <ColumnDefinition Width="*"></ColumnDefinition>
             <ColumnDefinition Width="*"></ColumnDefinition>
         </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*"></RowDefinition>
+            <RowDefinition Height="Auto"></RowDefinition>
+        </Grid.RowDefinitions>
 
 
-        <Image Margin="20" Grid.Column="0" Stretch="UniformToFill" HorizontalAlignment="Center" Source="Images/portrai.png"></Image>
-        <Image Margin="20" Grid.Column="1" Stretch="UniformToFill" HorizontalAlignment="Center" Source="Images/portrai.png"></Image>
-        <Image Margin="20" Grid.Column="2" Stretch="UniformToFill" HorizontalAlignment="Center" Source="Images/portrai.png"></Image>
+        <Image Margin="2" Grid.Row="0" Grid.Column="0" Stretch="UniformToFill" HorizontalAlignment="Center" Source="Images/Renaud.PNG"></Image>
+        <Image Margin="2" Grid.Row="0" Grid.Column="1" Stretch="UniformToFill" HorizontalAlignment="Center" Source="Images/Tom.PNG"></Image>
+        <Image Margin="2" Grid.Row="0" Grid.Column="2" Stretch="UniformToFill" HorizontalAlignment="Center" Source="Images/Marc.PNG"></Image>
 
-        <ProgressBar Margin="2" MouseLeftButtonUp="SelectSkydiver" Foreground="LightSkyBlue"  Opacity="0.8" Grid.Column="0" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" Orientation="Vertical" Maximum="10" Value="8" x:Name="RenaudProgressBar" />
-        <ProgressBar Margin="2" MouseLeftButtonUp="SelectSkydiver" Foreground="LightSkyBlue"  Opacity="0.8" Grid.Column="1" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" Orientation="Vertical" Maximum="10" Value="8" x:Name="TomProgressBar" />
-        <ProgressBar Margin="2" MouseLeftButtonUp="SelectSkydiver" Foreground="LightSkyBlue"  Opacity="0.8" Grid.Column="2" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" Orientation="Vertical" Maximum="10" Value="8" x:Name="MarcProgressBar"/>
+        <ProgressBar Margin="2" MouseLeftButtonUp="SelectSkydiver" Foreground="LightSkyBlue"  Opacity="0.7" Grid.Row="0" Grid.Column="0" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" Orientation="Vertical" Maximum="100" Value="0" x:Name="RenaudProgressBar" />
+        <ProgressBar Margin="2" MouseLeftButtonUp="SelectSkydiver" Foreground="LightSkyBlue"  Opacity="0.7" Grid.Row="0" Grid.Column="1" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" Orientation="Vertical" Maximum="100" Value="0" x:Name="TomProgressBar" />
+        <ProgressBar Margin="2" MouseLeftButtonUp="SelectSkydiver" Foreground="LightSkyBlue"  Opacity="0.7" Grid.Row="0" Grid.Column="2" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" Orientation="Vertical" Maximum="100" Value="0" x:Name="MarcProgressBar"/>
 
-        <Border Grid.Column="0" Visibility="Collapsed" BorderThickness="2" BorderBrush="Black" x:Name="RenaudBorder"></Border>
-        <Border Grid.Column="1" Visibility="Collapsed" BorderThickness="2" BorderBrush="Black" x:Name="TomBorder"></Border>
-        <Border Grid.Column="2" Visibility="Collapsed" BorderThickness="2" BorderBrush="Black" x:Name="MarcBorder"></Border>
+        <Border Grid.Row="0" Grid.Column="0" Visibility="Collapsed" BorderThickness="2" BorderBrush="Black" x:Name="RenaudBorder"></Border>
+        <Border Grid.Row="0" Grid.Column="1" Visibility="Collapsed" BorderThickness="2" BorderBrush="Black" x:Name="TomBorder"></Border>
+        <Border Grid.Row="0" Grid.Column="2" Visibility="Collapsed" BorderThickness="2" BorderBrush="Black" x:Name="MarcBorder"></Border>
 
 
+        <TextBlock Grid.Row="1" Grid.Column="0" Foreground="White" FontSize="25" FontWeight="Bold" x:Name="JumpNumberTextBlock" Text="Saut 1" TextAlignment="Center" VerticalAlignment="Center"></TextBlock>
+        <Button Grid.Row="1" Grid.Column="1" Grid.ColumnSpan="2" Margin="10" Click="NewJump">Nouveau saut</Button>
 
     </Grid>
 </Window>
