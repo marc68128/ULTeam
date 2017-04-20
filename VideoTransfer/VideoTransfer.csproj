@@ -67,7 +67,9 @@
     <Compile Include="Data\Context.cs" />
     <Compile Include="Helpers\BreadcrumbHelper.cs" />
     <Compile Include="Helpers\Command.cs" />
+    <Compile Include="Helpers\DriveListener.cs" />
     <Compile Include="Helpers\IOHelper.cs" />
+    <Compile Include="Helpers\MultipleFileCopier.cs" />
     <Compile Include="Helpers\SkydiverInitializer.cs" />
     <Compile Include="Model\CameraItem.cs" />
     <Compile Include="Properties\Annotations.cs" />

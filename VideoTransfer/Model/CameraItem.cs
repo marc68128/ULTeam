@@ -15,5 +15,11 @@ namespace VideoTransfer.Model
         }
         public string Path { get; set; }
         public bool IsDirectory { get; set; }
+
+        protected bool Equals(CameraItem other)
+        {
+            return string.Equals(Path, other.Path) && IsDirectory == other.IsDirectory;
+        }
+
     }
 }
