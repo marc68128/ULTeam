@@ -23,16 +23,24 @@ namespace VideoTransfer.Helpers
             {
                 while (_isListening)
                 {
-                    var drives = DriveInfo.GetDrives().Where(d => d.DriveType == DriveType.Removable).ToList();
-                    if (drives.Count > _drives.Count)
+                    try
                     {
-                        var addedDrive = drives.First(d => _drives.All(d2 => d2.RootDirectory.Name != d.RootDirectory.Name));
-                        _drives = drives;
-                        DriveAdded?.Invoke(this, addedDrive);
+                        var drives = DriveInfo.GetDrives().Where(d => d.DriveType == DriveType.Removable).ToList();
+                        if (drives.Count > _drives.Count)
+                        {
+                            var addedDrive = drives.First(d => _drives.All(d2 => d2.RootDirectory.Name != d.RootDirectory.Name));
+                            _drives = drives;
+                            DriveAdded?.Invoke(this, addedDrive);
+                        }
+                        if (drives.Count < _drives.Count)
+                        {
+                            _drives = drives;
+                        }
                     }
-                    if (drives.Count < _drives.Count)
+                    catch (Exception e)
                     {
-                        _drives = drives;
+                        Console.WriteLine(e);
+                        throw;
                     }
                 }
             });

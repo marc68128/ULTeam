@@ -17,7 +17,7 @@ namespace VideoTransfer.ViewModel
 {
     public class SkydiverViewModel : BaseViewModel
     {
-        private string _todayPath => $"{DateTime.Today.Year}/{DateTime.Today.ToString("MMMM", CultureInfo.GetCultureInfo("fr-FR"))}/{DateTime.Today.Day}";
+        private double m_CurrentUploadPercentage;
         private Skydiver _skydiver => Context.Instance.Skydivers.Single(s => s.Id == Id);
         public SkydiverViewModel(Skydiver s)
         {
@@ -32,12 +32,24 @@ namespace VideoTransfer.ViewModel
         public string Name { get; private set; } 
         public string Image { get; private set; }
         public int JumpNumber { get; set; }
-        public double CurrentUploadPercentage { get; set; }
+
+        public double CurrentUploadPercentage
+        {
+            get { return m_CurrentUploadPercentage; }
+            set
+            {
+                m_CurrentUploadPercentage = value;
+                OnPropertyChanged();
+            }
+        }
+
         public ICommand InitializeCommand { get; private set; }
 
 
         public void CheckDrive(DriveInfo d)
         {
+            if (_skydiver.CameraItems == null) return; 
+
             var driveContent = IOHelper.GetAllFilesAndFoldersRecursivly(d.RootDirectory.Name);
             var isSkydiverCam =  _skydiver.CameraItems.CompareDirectories(driveContent) > 80;
 
@@ -53,19 +65,26 @@ namespace VideoTransfer.ViewModel
             var videosArray = videos as string[] ?? videos.ToArray();
             if (videosArray.Any())
             {
-                //TODO: Create destination directory
-                Directory.CreateDirectory(_todayPath);
-                var extPath = Path.Combine(_todayPath, "Saut" + JumpNumber);
+                //Create destination directory
+                Directory.CreateDirectory(IOHelper.TodayPath);
+                var extPath = Path.Combine(IOHelper.TodayPath, "Saut" + JumpNumber);
                 Directory.CreateDirectory(extPath);
 
-                //TODO: Copy videos;
+                //Copy videos;
                 MultipleFileCopier copier = new MultipleFileCopier(videosArray.Select((s, i) => new Copy(s, Path.Combine(extPath, Name + (i > 1 ? "_" + i : "") + ".mp4"))).ToList());
-                copier.OnProgressChanged += (double persentage, ref bool cancel) => CurrentUploadPercentage = persentage;
+                copier.OnProgressChanged += (double persentage, ref bool cancel) =>
+                {
+                    CurrentUploadPercentage = persentage;
+                };;
+                copier.OnComplete += () =>
+                {
+                    CurrentUploadPercentage = 0;
+                    //Update Db with new files and folders
+                    _skydiver.CameraItems.AddRange(addedItems);
+                    Context.Instance.SaveChanges();
+                };
+                copier.Copy();
             }
-
-            //TODO: Refresh list  
-            _skydiver.CameraItems.AddRange(addedItems);
-            Context.Instance.SaveChanges();
         }
 
         private void InitCommands()

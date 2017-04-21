@@ -1,15 +1,15 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.IO;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using VideoTransfer.Model;
 
 namespace VideoTransfer.Helpers
 {
     public static class IOHelper
     {
+        public static string TodayPath => $"{DateTime.Today.Year}/{DateTime.Today.ToString("MMMM", CultureInfo.GetCultureInfo("fr-FR"))}/{DateTime.Today.Day}";
         public static readonly List<string> VideoExtention = new List<string> { ".mp4", ".MP4" };
 
         public static List<CameraItem> GetAllFilesAndFoldersRecursivly(string rootPath)
@@ -22,13 +22,13 @@ namespace VideoTransfer.Helpers
         public static double CompareDirectories(this List<CameraItem> driveContent, List<CameraItem> skydiverContent)
         {
             var driveItemCount = driveContent.Count;
-            double similaritiesPercentage = driveContent.Where(driveItem => skydiverContent.Any(driveItem.Equals)).Sum(driveItem => (double)100 / driveItemCount);
+            double similaritiesPercentage = driveContent.Where(driveItem => skydiverContent.Any(skydiveerItem => driveItem.Equals(skydiveerItem))).Sum(driveItem => (double)100 / driveItemCount);
             return similaritiesPercentage;
         }
 
         public static List<CameraItem> GetAddedCameraItems(List<CameraItem> driveContent, List<CameraItem> skydiverContent)
         {
-            var added = skydiverContent.Except(driveContent);
+            var added = driveContent.Except(skydiverContent);
             return added.ToList();
         }
     }

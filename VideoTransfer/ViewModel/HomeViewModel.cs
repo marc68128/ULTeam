@@ -12,13 +12,14 @@ namespace VideoTransfer.ViewModel
     {
         public HomeViewModel()
         {
-            Skydivers = new ObservableCollection<SkydiverViewModel>(Context.Instance.Skydivers.Select(s => new SkydiverViewModel(s)));  
+            Skydivers = new ObservableCollection<SkydiverViewModel>(Context.Instance.Skydivers.Select(s => new SkydiverViewModel(s)));
+            InitJumpNumber();
             var driveListener = new DriveListener();
             driveListener.DriveAdded += DriveAdded;
             driveListener.StartListening();
             PropertyChanged += OnPropertyChanged;
         }
-
+  
         public ObservableCollection<SkydiverViewModel> Skydivers { get; set; }
 
         private int _jumpNumber;
@@ -32,6 +33,16 @@ namespace VideoTransfer.ViewModel
             }
         }
 
+        private string _jumpNumberText;
+        public string JumpNumberText
+        {
+            get { return _jumpNumberText; }
+            set
+            {
+                _jumpNumberText = value;
+                OnPropertyChanged();
+            }
+        }
 
         private void DriveAdded(object sender, DriveInfo driveInfo)
         {
@@ -44,6 +55,18 @@ namespace VideoTransfer.ViewModel
             {
                 foreach (var skydiverViewModel in Skydivers)
                     skydiverViewModel.JumpNumber = JumpNumber;
+
+                JumpNumberText = "Saut " + JumpNumber;
+            }
+        }
+        private void InitJumpNumber()
+        {
+            JumpNumber = 1;
+            if (Directory.Exists(IOHelper.TodayPath) && Directory.GetDirectories(IOHelper.TodayPath).Length > 0)
+            {
+                JumpNumber = Directory.GetDirectories(IOHelper.TodayPath)
+                    .Select(d => int.Parse(new string(Path.GetFileName(d).Where(char.IsDigit).ToArray())))
+                    .Max() + 1;
             }
         }
     }
