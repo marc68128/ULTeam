@@ -13,11 +13,11 @@ namespace VideoTransfer.ViewModel
         public HomeViewModel()
         {
             Skydivers = new ObservableCollection<SkydiverViewModel>(Context.Instance.Skydivers.Select(s => new SkydiverViewModel(s)));
+            PropertyChanged += OnPropertyChanged;
             InitJumpNumber();
             var driveListener = new DriveListener();
             driveListener.DriveAdded += DriveAdded;
             driveListener.StartListening();
-            PropertyChanged += OnPropertyChanged;
         }
   
         public ObservableCollection<SkydiverViewModel> Skydivers { get; set; }

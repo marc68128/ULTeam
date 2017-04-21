@@ -67,11 +67,11 @@ namespace VideoTransfer.ViewModel
             {
                 //Create destination directory
                 Directory.CreateDirectory(IOHelper.TodayPath);
-                var extPath = Path.Combine(IOHelper.TodayPath, "Saut" + JumpNumber);
+                var extPath = Path.Combine(IOHelper.TodayPath, "Saut " + JumpNumber);
                 Directory.CreateDirectory(extPath);
 
                 //Copy videos;
-                MultipleFileCopier copier = new MultipleFileCopier(videosArray.Select((s, i) => new Copy(s, Path.Combine(extPath, Name + (i > 1 ? "_" + i : "") + ".mp4"))).ToList());
+                MultipleFileCopier copier = new MultipleFileCopier(videosArray.ToList().Select((s, i) => new Copy(s, Path.Combine(extPath, Name + "_" + DateTime.Today.ToString("MMMM", CultureInfo.GetCultureInfo("fr-FR")) + "_" + DateTime.Today.Day + "_Saut" + JumpNumber + (i > 1 ? "_" + i : "") + ".mp4"))).ToList());
                 copier.OnProgressChanged += (double persentage, ref bool cancel) =>
                 {
                     CurrentUploadPercentage = persentage;

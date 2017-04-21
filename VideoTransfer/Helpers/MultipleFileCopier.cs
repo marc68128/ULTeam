@@ -36,17 +36,6 @@ namespace VideoTransfer.Helpers
                 await Task.Run(() =>
                 {
                     Copy(copy.SourcePath, copy.DestinationPath);
-                }).ContinueWith(r =>
-                {
-                    if (r.Exception == null && r.IsCompleted)
-                    {
-                        File.Delete(copy.SourcePath);
-                        foreach (var file in Directory.GetFiles(Path.GetDirectoryName(copy.SourcePath),
-                            Path.GetFileName(copy.SourcePath).Replace("MP4", "*")))
-                        {
-                            File.Delete(file);
-                        }
-                    }
                 });
             }
         }
@@ -54,6 +43,16 @@ namespace VideoTransfer.Helpers
         private void Copy(string sourcePath, string destinationPath)
         {
             byte[] buffer = new byte[1024 * 1024]; // 1MB buffer
+
+
+            var copyNumber = 1;
+            var initialDestPath = destinationPath;
+            while (File.Exists(destinationPath))
+            {
+                var ext = Path.GetExtension(initialDestPath);
+                destinationPath = initialDestPath.Replace(ext, "") + $"({copyNumber++})" + ext; 
+            }
+
 
             using (FileStream source = new FileStream(sourcePath, FileMode.Open, FileAccess.Read))
             {
