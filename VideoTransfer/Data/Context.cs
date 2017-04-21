@@ -1,20 +1,21 @@
 ﻿using Newtonsoft.Json;
-using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
 using VideoTransfer.Model;
 
 namespace VideoTransfer.Data
 {
     public class Context
     {
+        #region Singleton implementation
+
         private static Context _instance;
         public static Context Instance => _instance ?? (_instance = new Context());
 
-        public List<Skydiver> Skydivers { get; set; }
+        #endregion
+
+        #region Constructors
 
         private Context()
         {
@@ -26,6 +27,16 @@ namespace VideoTransfer.Data
             }
         }
 
+        #endregion
+
+        #region Properties
+
+        public List<Skydiver> Skydivers { get; set; }
+
+        #endregion
+
+        #region Public methods
+
         public void SaveChanges()
         {
             byte[] data = new UTF8Encoding().GetBytes(JsonConvert.SerializeObject(Skydivers));
@@ -34,5 +45,7 @@ namespace VideoTransfer.Data
                 f.Write(data, 0, data.Length);
             }
         }
+
+        #endregion
     }
 }

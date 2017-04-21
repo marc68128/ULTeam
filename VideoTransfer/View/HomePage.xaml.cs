@@ -10,6 +10,8 @@ namespace VideoTransfer.View
     /// </summary>
     public partial class HomePage : Page
     {
+        #region Constructors
+
         public HomePage()
         {
             InitializeComponent();
@@ -23,5 +25,7 @@ namespace VideoTransfer.View
                 RootGrid.Children.Add(control);
             }
         }
+
+        #endregion
     }
 }

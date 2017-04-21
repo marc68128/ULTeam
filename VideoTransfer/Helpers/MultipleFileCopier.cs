@@ -9,9 +9,15 @@ namespace VideoTransfer.Helpers
 
     public class MultipleFileCopier
     {
+        #region Private fields
+
         private readonly List<Copy> _copies;
         private long _totalLength, _totalBytes;
         private int _copyInProgress;
+
+        #endregion
+
+        #region Constructors
 
         public MultipleFileCopier(List<Copy> copies)
         {
@@ -20,6 +26,10 @@ namespace VideoTransfer.Helpers
             OnProgressChanged += delegate { };
             OnComplete += delegate { };
         }
+        
+        #endregion
+
+        #region Public methods
 
         public async void Copy()
         {
@@ -40,10 +50,13 @@ namespace VideoTransfer.Helpers
             }
         }
 
+        #endregion
+
+        #region Private methods
+
         private void Copy(string sourcePath, string destinationPath)
         {
             byte[] buffer = new byte[1024 * 1024]; // 1MB buffer
-
 
             var copyNumber = 1;
             var initialDestPath = destinationPath;
@@ -52,7 +65,6 @@ namespace VideoTransfer.Helpers
                 var ext = Path.GetExtension(initialDestPath);
                 destinationPath = initialDestPath.Replace(ext, "") + $"({copyNumber++})" + ext; 
             }
-
 
             using (FileStream source = new FileStream(sourcePath, FileMode.Open, FileAccess.Read))
             {
@@ -80,26 +92,39 @@ namespace VideoTransfer.Helpers
             }
             CopyCompleted();
         }
-
         private void CopyCompleted()
         {
             if (--_copyInProgress == 0)
                 OnComplete?.Invoke();
         }
 
+        #endregion
+
+        #region Events
 
         public event ProgressChangeDelegate OnProgressChanged;
         public event Completedelegate OnComplete;
+
+        #endregion
     }
 
     public class Copy
     {
+        #region Constructors
+
         public Copy(string sourcePath, string destinationPath)
         {
             SourcePath = sourcePath;
             DestinationPath = destinationPath;
         }
+
+        #endregion
+
+        #region Properties
+
         public string SourcePath { get; set; }
         public string DestinationPath { get; set; }
+
+        #endregion
     }
 }

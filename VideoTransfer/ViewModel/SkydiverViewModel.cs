@@ -1,14 +1,8 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using Microsoft.WindowsAPICodePack.Dialogs;
 using VideoTransfer.Data;
 using VideoTransfer.Helpers;
 using VideoTransfer.Model;
@@ -17,8 +11,15 @@ namespace VideoTransfer.ViewModel
 {
     public class SkydiverViewModel : BaseViewModel
     {
+        #region Private fields
+
         private double m_CurrentUploadPercentage;
         private Skydiver _skydiver => Context.Instance.Skydivers.Single(s => s.Id == Id);
+
+        #endregion
+
+        #region Constructors
+
         public SkydiverViewModel(Skydiver s)
         {
             Id = s.Id;
@@ -28,11 +29,14 @@ namespace VideoTransfer.ViewModel
             InitCommands();
         }
 
+        #endregion
+
+        #region Properties
+
         public int Id { get; private set; }
         public string Name { get; private set; } 
         public string Image { get; private set; }
         public int JumpNumber { get; set; }
-
         public double CurrentUploadPercentage
         {
             get { return m_CurrentUploadPercentage; }
@@ -43,8 +47,15 @@ namespace VideoTransfer.ViewModel
             }
         }
 
+        #endregion
+
+        #region Commands
+
         public ICommand InitializeCommand { get; private set; }
 
+        #endregion
+
+        #region Public methods
 
         public void CheckDrive(DriveInfo d)
         {
@@ -87,6 +98,10 @@ namespace VideoTransfer.ViewModel
             }
         }
 
+        #endregion
+
+        #region Private methods
+
         private void InitCommands()
         {
             InitializeCommand = new Command(_ =>
@@ -94,5 +109,7 @@ namespace VideoTransfer.ViewModel
                 SkydiverInitializer.Initialize(_skydiver);
             });
         }
+
+        #endregion
     }
 }

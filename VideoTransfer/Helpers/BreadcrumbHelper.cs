@@ -5,9 +5,20 @@ namespace VideoTransfer.Helpers
 {
     public static class BreadcrumbHelper
     {
+        #region Private fields
+
         private static readonly Stack<Page> PageStack = new Stack<Page>();
         private static Page _pageCurrent;
+
+        #endregion
+
+        #region Properties
+
         public static MainWindow MainWindow { get; set; }
+
+        #endregion
+
+        #region Public methods
 
         public static void GotoPage(Page page)
         {
@@ -24,10 +35,16 @@ namespace VideoTransfer.Helpers
             SwitchDisplayTo(page);
         }
 
+        #endregion
+
+        #region Private methods
+
         private static void SwitchDisplayTo(Page page)
         {
             MainWindow.Content = page;
             _pageCurrent = page;
         }
+
+        #endregion
     }
 }

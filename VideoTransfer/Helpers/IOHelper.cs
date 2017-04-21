@@ -9,8 +9,14 @@ namespace VideoTransfer.Helpers
 {
     public static class IOHelper
     {
+        #region Public fields
+
         public static string TodayPath => $"{DateTime.Today.Year}/{DateTime.Today.ToString("MMMM", CultureInfo.GetCultureInfo("fr-FR"))}/{DateTime.Today.Day}";
         public static readonly List<string> VideoExtention = new List<string> { ".mp4", ".MP4" };
+
+        #endregion
+
+        #region Public methods
 
         public static List<CameraItem> GetAllFilesAndFoldersRecursivly(string rootPath)
         {
@@ -31,5 +37,7 @@ namespace VideoTransfer.Helpers
             var added = driveContent.Except(skydiverContent);
             return added.ToList();
         }
+
+        #endregion
     }
 }

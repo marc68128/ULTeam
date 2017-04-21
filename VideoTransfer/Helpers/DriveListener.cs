@@ -2,15 +2,20 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace VideoTransfer.Helpers
 {
     public class DriveListener
     {
+        #region Private fields
+
         private List<DriveInfo> _drives;
         private bool _isListening;
+
+        #endregion
+
+        #region Constructors
 
         public async void StartListening()
         {
@@ -23,34 +28,36 @@ namespace VideoTransfer.Helpers
             {
                 while (_isListening)
                 {
-                    try
+                    var drives = DriveInfo.GetDrives().Where(d => d.DriveType == DriveType.Removable).ToList();
+                    if (drives.Count > _drives.Count)
                     {
-                        var drives = DriveInfo.GetDrives().Where(d => d.DriveType == DriveType.Removable).ToList();
-                        if (drives.Count > _drives.Count)
-                        {
-                            var addedDrive = drives.First(d => _drives.All(d2 => d2.RootDirectory.Name != d.RootDirectory.Name));
-                            _drives = drives;
-                            DriveAdded?.Invoke(this, addedDrive);
-                        }
-                        if (drives.Count < _drives.Count)
-                        {
-                            _drives = drives;
-                        }
+                        var addedDrive = drives.First(d => _drives.All(d2 => d2.RootDirectory.Name != d.RootDirectory.Name));
+                        _drives = drives;
+                        DriveAdded?.Invoke(this, addedDrive);
                     }
-                    catch (Exception e)
+                    if (drives.Count < _drives.Count)
                     {
-                        Console.WriteLine(e);
-                        throw;
+                        _drives = drives;
                     }
                 }
             });
         }
 
+        #endregion
+
+        #region Public methods
+
         public void StopListening()
         {
-            _isListening = false; 
+            _isListening = false;
         }
 
+        #endregion
+
+        #region Events
+
         public event EventHandler<DriveInfo> DriveAdded;
+
+        #endregion
     }
 }

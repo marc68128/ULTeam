@@ -9,11 +9,15 @@ namespace VideoTransfer
     /// </summary>
     public partial class MainWindow : Window
     {
+        #region Constructors
+
         public MainWindow()
         {
             InitializeComponent();
             BreadcrumbHelper.MainWindow = this;
             BreadcrumbHelper.GotoPage(new HomePage());
         }
+
+        #endregion
     }
 }

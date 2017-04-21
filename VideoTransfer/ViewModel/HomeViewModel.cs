@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.ObjectModel;
+﻿using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.IO;
 using System.Linq;
@@ -10,6 +9,15 @@ namespace VideoTransfer.ViewModel
 {
     public class HomeViewModel : BaseViewModel
     {
+        #region Private fields
+
+        private int _jumpNumber;
+        private string _jumpNumberText;
+
+        #endregion
+
+        #region Constructors
+
         public HomeViewModel()
         {
             Skydivers = new ObservableCollection<SkydiverViewModel>(Context.Instance.Skydivers.Select(s => new SkydiverViewModel(s)));
@@ -19,10 +27,12 @@ namespace VideoTransfer.ViewModel
             driveListener.DriveAdded += DriveAdded;
             driveListener.StartListening();
         }
-  
-        public ObservableCollection<SkydiverViewModel> Skydivers { get; set; }
 
-        private int _jumpNumber;
+        #endregion
+
+        #region Properties
+
+        public ObservableCollection<SkydiverViewModel> Skydivers { get; set; }
         public int JumpNumber
         {
             get { return _jumpNumber; }
@@ -32,8 +42,6 @@ namespace VideoTransfer.ViewModel
                 OnPropertyChanged();
             }
         }
-
-        private string _jumpNumberText;
         public string JumpNumberText
         {
             get { return _jumpNumberText; }
@@ -43,6 +51,10 @@ namespace VideoTransfer.ViewModel
                 OnPropertyChanged();
             }
         }
+
+        #endregion
+
+        #region Private methods
 
         private void DriveAdded(object sender, DriveInfo driveInfo)
         {
@@ -65,9 +77,11 @@ namespace VideoTransfer.ViewModel
             if (Directory.Exists(IOHelper.TodayPath) && Directory.GetDirectories(IOHelper.TodayPath).Length > 0)
             {
                 JumpNumber = Directory.GetDirectories(IOHelper.TodayPath)
-                    .Select(d => int.Parse(new string(Path.GetFileName(d).Where(char.IsDigit).ToArray())))
-                    .Max() + 1;
+                                 .Select(d => int.Parse(new string(Path.GetFileName(d).Where(char.IsDigit).ToArray())))
+                                 .Max() + 1;
             }
         }
+
+        #endregion
     }
 }
