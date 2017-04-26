@@ -37,6 +37,11 @@ namespace VideoTransfer.Helpers
             var added = driveContent.Except(skydiverContent);
             return added.ToList();
         }
+        public static List<CameraItem> GetRemovedCameraItems(List<CameraItem> driveContent, List<CameraItem> skydiverContent)
+        {
+            var removed = skydiverContent.Except(driveContent);
+            return removed.ToList();
+        }
 
         #endregion
     }

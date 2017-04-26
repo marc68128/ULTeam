@@ -1,9 +1,13 @@
-﻿using System.Collections.ObjectModel;
+﻿using System;
+using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.IO;
 using System.Linq;
+using System.Windows;
+using System.Windows.Threading;
 using VideoTransfer.Data;
 using VideoTransfer.Helpers;
+using VideoTransfer.Popup;
 
 namespace VideoTransfer.ViewModel
 {
@@ -58,8 +62,18 @@ namespace VideoTransfer.ViewModel
 
         private void DriveAdded(object sender, DriveInfo driveInfo)
         {
+            var diskFound = false;
             foreach (var skydiverViewModel in Skydivers)
-                skydiverViewModel.CheckDrive(driveInfo);    
+                diskFound = skydiverViewModel.CheckDrive(driveInfo) || diskFound;
+
+            if (!diskFound)
+            {
+                //TODO : Init
+                Application.Current.Dispatcher.BeginInvoke(new Action(() =>
+                {
+                    new SkydiverSelectionPopup().ShowDialog();
+                }));
+            }
         }
         private void OnPropertyChanged(object sender, PropertyChangedEventArgs args)
         {

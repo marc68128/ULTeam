@@ -34,7 +34,7 @@ namespace VideoTransfer.ViewModel
         #region Properties
 
         public int Id { get; private set; }
-        public string Name { get; private set; } 
+        public string Name { get; private set; }
         public string Image { get; private set; }
         public int JumpNumber { get; set; }
         public double CurrentUploadPercentage
@@ -57,45 +57,51 @@ namespace VideoTransfer.ViewModel
 
         #region Public methods
 
-        public void CheckDrive(DriveInfo d)
+        public bool CheckDrive(DriveInfo d)
         {
-            if (_skydiver.CameraItems == null) return; 
+            if (_skydiver.CameraItems == null) return false;
 
             var driveContent = IOHelper.GetAllFilesAndFoldersRecursivly(d.RootDirectory.Name);
-            var isSkydiverCam =  _skydiver.CameraItems.CompareDirectories(driveContent) > 80;
+            var isSkydiverCam =
+                _skydiver.CameraItems.CompareDirectories(driveContent) > 80 ||
+                File.Exists(Path.Combine(d.RootDirectory.Name, _skydiver.IdentifierFileName));
 
-            if (!isSkydiverCam) return; 
- 
-            
+            if (!isSkydiverCam) return false;
+
             var addedItems = IOHelper.GetAddedCameraItems(driveContent, _skydiver.CameraItems);
+            var removedItems = IOHelper.GetRemovedCameraItems(driveContent, _skydiver.CameraItems);
+
+            foreach (var removedItem in removedItems) _skydiver.CameraItems.Remove(_skydiver.CameraItems.First(ci => ci.Path == removedItem.Path));
 
             if (!addedItems.Any())
-                return;
+                return true;
 
             var videos = addedItems.Where(a => !a.IsDirectory && IOHelper.VideoExtention.Any(ext => a.Path.Contains(ext))).Select(i => i.Path);
             var videosArray = videos as string[] ?? videos.ToArray();
-            if (videosArray.Any())
-            {
-                //Create destination directory
-                Directory.CreateDirectory(IOHelper.TodayPath);
-                var extPath = Path.Combine(IOHelper.TodayPath, "Saut " + JumpNumber);
-                Directory.CreateDirectory(extPath);
 
-                //Copy videos;
-                MultipleFileCopier copier = new MultipleFileCopier(videosArray.ToList().Select((s, i) => new Copy(s, Path.Combine(extPath, Name + "_" + DateTime.Today.ToString("MMMM", CultureInfo.GetCultureInfo("fr-FR")) + "_" + DateTime.Today.Day + "_Saut" + JumpNumber + (i > 1 ? "_" + i : "") + ".mp4"))).ToList());
-                copier.OnProgressChanged += (double persentage, ref bool cancel) =>
-                {
-                    CurrentUploadPercentage = persentage;
-                };;
-                copier.OnComplete += () =>
-                {
-                    CurrentUploadPercentage = 0;
+            if (!videosArray.Any())
+                return true;
+
+            //Create destination directory
+            Directory.CreateDirectory(IOHelper.TodayPath);
+            var extPath = Path.Combine(IOHelper.TodayPath, "Saut " + JumpNumber);
+            Directory.CreateDirectory(extPath);
+
+            //Copy videos;
+            MultipleFileCopier copier = new MultipleFileCopier(videosArray.ToList().Select((s, i) => new Copy(s, Path.Combine(extPath, Name + "_" + DateTime.Today.ToString("MMMM", CultureInfo.GetCultureInfo("fr-FR")) + "_" + DateTime.Today.Day + "_Saut" + JumpNumber + (i > 1 ? "_" + i : "") + ".mp4"))).ToList());
+            copier.OnProgressChanged += (double persentage, ref bool cancel) =>
+            {
+                CurrentUploadPercentage = persentage;
+            };
+            copier.OnComplete += () =>
+            {
+                CurrentUploadPercentage = 0;
                     //Update Db with new files and folders
                     _skydiver.CameraItems.AddRange(addedItems);
-                    Context.Instance.SaveChanges();
-                };
-                copier.Copy();
-            }
+                Context.Instance.SaveChanges();
+            };
+            copier.Copy();
+            return true;
         }
 
         #endregion

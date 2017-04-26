@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System.IO;
+using System.Linq;
 using Microsoft.WindowsAPICodePack.Dialogs;
 using VideoTransfer.Data;
 using VideoTransfer.Model;
@@ -16,6 +17,7 @@ namespace VideoTransfer.Helpers
             var cameraItems = IOHelper.GetAllFilesAndFoldersRecursivly(drive);
             Context.Instance.Skydivers.Single(sd => sd.Id == s.Id).CameraItems = cameraItems;
             Context.Instance.SaveChanges();
+            AddDriveIdentifier(drive, s);
         }
 
         #endregion
@@ -24,14 +26,16 @@ namespace VideoTransfer.Helpers
 
         private static string SelectDrive()
         {
-            var dialog = new CommonOpenFileDialog();
-            dialog.IsFolderPicker = true;
-            CommonFileDialogResult result = dialog.ShowDialog();
-            if (result == CommonFileDialogResult.Ok)
-            {
-                return dialog.FileNames.First();
-            }
-            return null; 
+            var dialog = new CommonOpenFileDialog { IsFolderPicker = true };
+            var result = dialog.ShowDialog();
+            return result == CommonFileDialogResult.Ok ? dialog.FileNames.First() : null;
+        }
+
+        private static void AddDriveIdentifier(string drive, Skydiver s)
+        {
+            var fileName = Path.Combine(drive, s.IdentifierFileName);
+            using (StreamWriter outputFile = new StreamWriter(fileName, true))
+                outputFile.WriteLine(Constants.DoNotRemoveMessage);
         }
 
         #endregion

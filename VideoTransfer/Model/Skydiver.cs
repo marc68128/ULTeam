@@ -12,6 +12,7 @@ namespace VideoTransfer.Model
         public bool IsInitialized { get; set; }
         public string ImageName { get; set; }
         public List<CameraItem> CameraItems { get; set; }
+        public string IdentifierFileName => $"VideoTransfer_{Name}_{Id}.donotremove";
 
         #endregion
     }
