@@ -1,13 +1,10 @@
-﻿using System;
-using System.Collections.ObjectModel;
+﻿using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.IO;
 using System.Linq;
-using System.Windows;
-using System.Windows.Threading;
+using System.Threading.Tasks;
 using VideoTransfer.Data;
 using VideoTransfer.Helpers;
-using VideoTransfer.Popup;
 
 namespace VideoTransfer.ViewModel
 {
@@ -17,13 +14,17 @@ namespace VideoTransfer.ViewModel
 
         private int _jumpNumber;
         private string _jumpNumberText;
-
+        private bool _showModal;
+        private string _modalTitle;
+        private string _modalMessage;
+        
         #endregion
 
         #region Constructors
 
         public HomeViewModel()
         {
+            InitCommands();
             Skydivers = new ObservableCollection<SkydiverViewModel>(Context.Instance.Skydivers.Select(s => new SkydiverViewModel(s)));
             PropertyChanged += OnPropertyChanged;
             InitJumpNumber();
@@ -55,6 +56,39 @@ namespace VideoTransfer.ViewModel
                 OnPropertyChanged();
             }
         }
+        public bool ShowModal
+        {
+            get { return _showModal; }
+            set
+            {
+                _showModal = value;
+                OnPropertyChanged();
+            }
+        }
+        public string ModalTitle
+        {
+            get { return _modalTitle; }
+            set
+            {
+                _modalTitle = value;
+                OnPropertyChanged();
+            }
+        }
+        public string ModalMessage
+        {
+            get { return _modalMessage; }
+            set
+            {
+                _modalMessage = value;
+                OnPropertyChanged();
+            }
+        }
+
+        #endregion
+
+        #region Commands
+
+        public Command HideModalCommand { get; set; }
 
         #endregion
 
@@ -68,11 +102,14 @@ namespace VideoTransfer.ViewModel
 
             if (!diskFound)
             {
-                //TODO : Init
-                Application.Current.Dispatcher.BeginInvoke(new Action(() =>
+                ModalTitle = "Attention !";
+                ModalMessage = "Le disque ajouté n'a pas été initialisé.\nPour l'utiliser, choisisez un profil et initialisez le disque.";
+                ShowModal = true;
+                Task.Run(() =>
                 {
-                    new SkydiverSelectionPopup().ShowDialog();
-                }));
+                    Task.Delay(2000);
+                    ShowModal = false;
+                });
             }
         }
         private void OnPropertyChanged(object sender, PropertyChangedEventArgs args)
@@ -94,6 +131,10 @@ namespace VideoTransfer.ViewModel
                                  .Select(d => int.Parse(new string(Path.GetFileName(d).Where(char.IsDigit).ToArray())))
                                  .Max() + 1;
             }
+        }
+        private void InitCommands()
+        {
+            HideModalCommand = new Command(o => ShowModal = false);
         }
 
         #endregion
