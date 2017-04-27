@@ -13,8 +13,8 @@ namespace VideoTransfer.ViewModel
     {
         #region Private fields
 
-        private double m_CurrentUploadPercentage;
-        private Skydiver _skydiver => Context.Instance.Skydivers.Single(s => s.Id == Id);
+        private double _currentUploadPercentage;
+        private Skydiver Skydiver => Context.Instance.Skydivers.Single(s => s.Id == Id);
 
         #endregion
 
@@ -39,10 +39,10 @@ namespace VideoTransfer.ViewModel
         public int JumpNumber { get; set; }
         public double CurrentUploadPercentage
         {
-            get { return m_CurrentUploadPercentage; }
+            get => _currentUploadPercentage;
             set
             {
-                m_CurrentUploadPercentage = value;
+                _currentUploadPercentage = value;
                 OnPropertyChanged();
             }
         }
@@ -59,19 +59,19 @@ namespace VideoTransfer.ViewModel
 
         public bool CheckDrive(DriveInfo d)
         {
-            if (_skydiver.CameraItems == null) return false;
+            if (Skydiver.CameraItems == null) return false;
 
             var driveContent = IOHelper.GetAllFilesAndFoldersRecursivly(d.RootDirectory.Name);
             var isSkydiverCam =
-                _skydiver.CameraItems.CompareDirectories(driveContent) > 80 ||
-                File.Exists(Path.Combine(d.RootDirectory.Name, _skydiver.IdentifierFileName));
+                Skydiver.CameraItems.CompareDirectories(driveContent) > 80 ||
+                File.Exists(Path.Combine(d.RootDirectory.Name, Skydiver.IdentifierFileName));
 
             if (!isSkydiverCam) return false;
 
-            var addedItems = IOHelper.GetAddedCameraItems(driveContent, _skydiver.CameraItems);
-            var removedItems = IOHelper.GetRemovedCameraItems(driveContent, _skydiver.CameraItems);
+            var addedItems = IOHelper.GetAddedCameraItems(driveContent, Skydiver.CameraItems);
+            var removedItems = IOHelper.GetRemovedCameraItems(driveContent, Skydiver.CameraItems);
 
-            foreach (var removedItem in removedItems) _skydiver.CameraItems.Remove(_skydiver.CameraItems.First(ci => ci.Path == removedItem.Path));
+            foreach (var removedItem in removedItems) Skydiver.CameraItems.Remove(Skydiver.CameraItems.First(ci => ci.Path == removedItem.Path));
 
             if (!addedItems.Any())
                 return true;
@@ -88,7 +88,7 @@ namespace VideoTransfer.ViewModel
             Directory.CreateDirectory(extPath);
 
             //Copy videos;
-            MultipleFileCopier copier = new MultipleFileCopier(videosArray.ToList().Select((s, i) => new Copy(s, Path.Combine(extPath, Name + "_" + DateTime.Today.ToString("MMMM", CultureInfo.GetCultureInfo("fr-FR")) + "_" + DateTime.Today.Day + "_Saut" + JumpNumber + (i > 1 ? "_" + i : "") + ".mp4"))).ToList());
+            MultipleFileCopier copier = new MultipleFileCopier(videosArray.ToList().Select(s => new Copy(s, Path.Combine(extPath, Name + " (" + DateTime.Today.ToString("MM", CultureInfo.GetCultureInfo("fr-FR")) + "-" + DateTime.Today.Day + ") (Saut" + JumpNumber + ").mp4"))).ToList());
             copier.OnProgressChanged += (double persentage, ref bool cancel) =>
             {
                 CurrentUploadPercentage = persentage;
@@ -97,7 +97,7 @@ namespace VideoTransfer.ViewModel
             {
                 CurrentUploadPercentage = 0;
                     //Update Db with new files and folders
-                    _skydiver.CameraItems.AddRange(addedItems);
+                    Skydiver.CameraItems.AddRange(addedItems);
                 Context.Instance.SaveChanges();
             };
             copier.Copy();
@@ -112,7 +112,7 @@ namespace VideoTransfer.ViewModel
         {
             InitializeCommand = new Command(_ =>
             {
-                SkydiverInitializer.Initialize(_skydiver);
+                SkydiverInitializer.Initialize(Skydiver);
             });
         }
 

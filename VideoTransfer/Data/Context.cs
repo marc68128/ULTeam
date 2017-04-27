@@ -39,7 +39,7 @@ namespace VideoTransfer.Data
 
         public void SaveChanges()
         {
-            byte[] data = new UTF8Encoding().GetBytes(JsonConvert.SerializeObject(Skydivers));
+            byte[] data = new UTF8Encoding().GetBytes(JsonConvert.SerializeObject(Skydivers, Formatting.Indented));
             using (Stream f = File.Open(Constants.DbFilePath, FileMode.OpenOrCreate, FileAccess.Write))
             {
                 f.Write(data, 0, data.Length);

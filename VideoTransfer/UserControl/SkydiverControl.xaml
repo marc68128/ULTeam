@@ -7,12 +7,13 @@
              d:DesignHeight="500" d:DesignWidth="300">
     <Grid>
         <Grid.RowDefinitions>
-            <RowDefinition Height="*"></RowDefinition>
             <RowDefinition Height="Auto"></RowDefinition>
+            <RowDefinition Height="*"></RowDefinition>
         </Grid.RowDefinitions>
+        
+        <Button Grid.Row="0" Command="{Binding InitializeCommand}">Initialiser</Button>
+        <Image Margin="0" Grid.Row="1" Stretch="UniformToFill" HorizontalAlignment="Center" x:Name="Image" Source="{Binding Image, Mode=OneWay}"></Image>
+        <ProgressBar Margin="0" Foreground="LightSkyBlue"  Opacity="0.8" Grid.Row="1" Height="{Binding Height, Source=Image}" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" Orientation="Vertical" Maximum="100" Minimum="0" Value="{Binding CurrentUploadPercentage, Mode=OneWay}" />
 
-        <Image Margin="0" Grid.Row="0" Stretch="UniformToFill" HorizontalAlignment="Center" Source="{Binding Image, Mode=OneWay}"></Image>
-        <ProgressBar Margin="0" Foreground="LightSkyBlue"  Opacity="0.8" Grid.Row="0" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" Orientation="Vertical" Maximum="100" Minimum="0" Value="{Binding CurrentUploadPercentage, Mode=OneWay}" />
-        <Button Grid.Row="1" Command="{Binding InitializeCommand}">Initialiser</Button>
     </Grid>
 </UserControl>

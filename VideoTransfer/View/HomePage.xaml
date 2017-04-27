@@ -7,7 +7,7 @@
       mc:Ignorable="d" 
       d:DesignHeight="600" d:DesignWidth="800"
       Title="HomePage">
-    
+
     <Page.Resources>
         <ResourceDictionary>
             <converter:BoolToVisibilityConverter x:Key="BoolToVisibilityConverter"></converter:BoolToVisibilityConverter>
@@ -29,9 +29,9 @@
                     <ColumnDefinition Width="*"></ColumnDefinition>
                     <ColumnDefinition Width="Auto"></ColumnDefinition>
                 </Grid.ColumnDefinitions>
-                <Button Content="&lt;&lt;" Grid.Column="0" Padding="20,5"></Button>
-                <TextBlock Text="Saut 1" Grid.Column="1" TextAlignment="Center" FontSize="20" FontWeight="Bold"></TextBlock>
-                <Button Content="&gt;&gt;" Grid.Column="2" Padding="20,5"></Button>
+                <Button Content="&lt;&lt;" Grid.Column="0" Padding="20,5" Command="{Binding PreviousJumpCommand}"></Button>
+                <TextBlock Text="{Binding JumpNumberText, Mode=OneWay}" Grid.Column="1" TextAlignment="Center" FontSize="20" FontWeight="Bold"></TextBlock>
+                <Button Content="&gt;&gt;" Grid.Column="2" Padding="20,5" Command="{Binding NextJumpCommand}"></Button>
             </Grid>
         </Grid>
 

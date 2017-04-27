@@ -2,7 +2,6 @@
 using System.ComponentModel;
 using System.IO;
 using System.Linq;
-using System.Threading.Tasks;
 using VideoTransfer.Data;
 using VideoTransfer.Helpers;
 
@@ -17,7 +16,7 @@ namespace VideoTransfer.ViewModel
         private bool _showModal;
         private string _modalTitle;
         private string _modalMessage;
-        
+
         #endregion
 
         #region Constructors
@@ -40,16 +39,17 @@ namespace VideoTransfer.ViewModel
         public ObservableCollection<SkydiverViewModel> Skydivers { get; set; }
         public int JumpNumber
         {
-            get { return _jumpNumber; }
+            get => _jumpNumber;
             set
             {
                 _jumpNumber = value;
                 OnPropertyChanged();
+                JumpNumberText = $"Saut {_jumpNumber}";
             }
         }
         public string JumpNumberText
         {
-            get { return _jumpNumberText; }
+            get => _jumpNumberText;
             set
             {
                 _jumpNumberText = value;
@@ -58,7 +58,7 @@ namespace VideoTransfer.ViewModel
         }
         public bool ShowModal
         {
-            get { return _showModal; }
+            get => _showModal;
             set
             {
                 _showModal = value;
@@ -67,7 +67,7 @@ namespace VideoTransfer.ViewModel
         }
         public string ModalTitle
         {
-            get { return _modalTitle; }
+            get => _modalTitle;
             set
             {
                 _modalTitle = value;
@@ -76,7 +76,7 @@ namespace VideoTransfer.ViewModel
         }
         public string ModalMessage
         {
-            get { return _modalMessage; }
+            get => _modalMessage;
             set
             {
                 _modalMessage = value;
@@ -89,6 +89,8 @@ namespace VideoTransfer.ViewModel
         #region Commands
 
         public Command HideModalCommand { get; set; }
+        public Command NextJumpCommand { get; set; }
+        public Command PreviousJumpCommand { get; set; }
 
         #endregion
 
@@ -100,17 +102,11 @@ namespace VideoTransfer.ViewModel
             foreach (var skydiverViewModel in Skydivers)
                 diskFound = skydiverViewModel.CheckDrive(driveInfo) || diskFound;
 
-            if (!diskFound)
-            {
-                ModalTitle = "Attention !";
-                ModalMessage = "Le disque ajouté n'a pas été initialisé.\nPour l'utiliser, choisisez un profil et initialisez le disque.";
-                ShowModal = true;
-                //Task.Run(() =>
-                //{
-                //    Task.Delay(2000);
-                //    ShowModal = false;
-                //});
-            }
+            if (diskFound) return;
+
+            ModalTitle = "Attention !";
+            ModalMessage = "Le disque ajouté n'a pas été initialisé.\nPour l'utiliser, choisisez un profil et initialisez le disque.";
+            ShowModal = true;
         }
         private void OnPropertyChanged(object sender, PropertyChangedEventArgs args)
         {
@@ -134,10 +130,9 @@ namespace VideoTransfer.ViewModel
         }
         private void InitCommands()
         {
-            HideModalCommand = new Command(o =>
-            {
-                ShowModal = false;
-            });
+            HideModalCommand = new Command(o => ShowModal = false);
+            NextJumpCommand = new Command(o => JumpNumber++);
+            PreviousJumpCommand = new Command(o => JumpNumber--);
         }
 
         #endregion
