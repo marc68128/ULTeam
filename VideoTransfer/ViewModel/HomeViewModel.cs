@@ -105,11 +105,11 @@ namespace VideoTransfer.ViewModel
                 ModalTitle = "Attention !";
                 ModalMessage = "Le disque ajouté n'a pas été initialisé.\nPour l'utiliser, choisisez un profil et initialisez le disque.";
                 ShowModal = true;
-                Task.Run(() =>
-                {
-                    Task.Delay(2000);
-                    ShowModal = false;
-                });
+                //Task.Run(() =>
+                //{
+                //    Task.Delay(2000);
+                //    ShowModal = false;
+                //});
             }
         }
         private void OnPropertyChanged(object sender, PropertyChangedEventArgs args)
@@ -134,7 +134,10 @@ namespace VideoTransfer.ViewModel
         }
         private void InitCommands()
         {
-            HideModalCommand = new Command(o => ShowModal = false);
+            HideModalCommand = new Command(o =>
+            {
+                ShowModal = false;
+            });
         }
 
         #endregion

@@ -15,7 +15,6 @@
     </Page.Resources>
 
     <Grid>
-
         <Grid>
             <Grid.RowDefinitions>
                 <RowDefinition Height="*"></RowDefinition>
@@ -37,6 +36,7 @@
         </Grid>
 
         <Grid Background="#aa000000" Visibility="{Binding ShowModal, Mode=OneWay, Converter={StaticResource BoolToVisibilityConverter}}">
+
             <Grid VerticalAlignment="Center" HorizontalAlignment="Center" Background="White">
                 <Grid.RowDefinitions>
                     <RowDefinition Height="Auto"></RowDefinition>
@@ -49,6 +49,5 @@
                 <Button Grid.Row="2" Margin="10,10,10,10" HorizontalAlignment="Right" Style="{DynamicResource SquareButtonStyle}" Command="{Binding HideModalCommand}">Fermer</Button>
             </Grid>
         </Grid>
-        
     </Grid>
 </Page>

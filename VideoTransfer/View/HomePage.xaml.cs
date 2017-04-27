@@ -16,6 +16,7 @@ namespace VideoTransfer.View
         {
             InitializeComponent();
             var homeVm = new HomeViewModel();
+            DataContext = homeVm;
             for (var index = 0; index < homeVm.Skydivers.Count; index++)
             {
                 var skydiver = homeVm.Skydivers[index];
