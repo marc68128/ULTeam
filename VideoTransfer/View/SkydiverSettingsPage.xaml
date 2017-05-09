@@ -1,0 +1,51 @@
+﻿<Page x:Class="VideoTransfer.View.SkydiverSettingsPage"
+      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+      xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+      xmlns:local="clr-namespace:VideoTransfer.View"
+      mc:Ignorable="d" 
+      d:DesignHeight="300" d:DesignWidth="300"
+      Title="SkydiverSettingsPage">
+
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="Auto"></ColumnDefinition>
+            <ColumnDefinition Width="*"></ColumnDefinition>
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*"></RowDefinition>
+            <RowDefinition Height="Auto"></RowDefinition>
+        </Grid.RowDefinitions>
+
+        <Grid Grid.Column="0" Margin="10">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="*"></RowDefinition>
+                <RowDefinition Height="Auto"></RowDefinition>
+            </Grid.RowDefinitions>
+            <Image  Source="{Binding ImagePath}"></Image>
+            <Button Margin="0,10,0,0" Command="{Binding EditPictureCommand}" Grid.Row="1" Style="{DynamicResource SquareButtonStyle}" Content="Modifier"></Button>
+        </Grid>
+
+        <StackPanel Grid.Row="0" Grid.Column="1">
+            <Button Margin="5" Command="{Binding InitializeCommand}" Style="{DynamicResource SquareButtonStyle}" Content="Initialiser"></Button>
+            
+            <TextBlock Margin="5,5,5,0" Text="Nom :"></TextBlock>
+            <TextBox Margin="5" Text="{Binding Name, Mode=TwoWay}"></TextBox>
+
+            <TextBlock Margin="5,5,5,0" Text="Supprimer les vidéos copiées :"></TextBlock>
+            <CheckBox Margin="5" IsChecked="{Binding DeleteVideos, Mode=TwoWay}"></CheckBox>
+        </StackPanel>
+
+        <Grid Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"></ColumnDefinition>
+                <ColumnDefinition Width="*"></ColumnDefinition>
+            </Grid.ColumnDefinitions>
+            <Button Margin="10" Command="{Binding CancelCommand}">Annuler</Button>
+            <Button Grid.Column="1" Margin="10" Command="{Binding SaveCommand}">Enregistrer</Button>
+        </Grid>
+
+
+    </Grid>
+</Page>

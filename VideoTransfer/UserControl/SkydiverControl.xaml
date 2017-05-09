@@ -5,12 +5,27 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              mc:Ignorable="d" 
              d:DesignHeight="500" d:DesignWidth="300">
-    <Grid>
-        <Image Margin="0" Stretch="UniformToFill" HorizontalAlignment="Center" x:Name="Image" Source="{Binding Image, Mode=OneWay}"></Image>
-        <ProgressBar Margin="0" Foreground="LightSkyBlue"  Opacity="0.8" Height="{Binding Height, Source=Image}" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" Orientation="Vertical" Maximum="100" Minimum="0" Value="{Binding CurrentUploadPercentage, Mode=OneWay}" />
+    <Grid Margin="5,0" MouseLeftButtonUp="NavigateClick">
 
-        <Button  VerticalAlignment="Top" HorizontalAlignment="Right" Margin="10">
-            <Image Source="/Image/settings.png" Height="30" Width="30"></Image>
-        </Button>
+        <Grid.Style>
+            <Style TargetType="{x:Type Grid}">
+                <Style.Triggers>
+                    <Trigger Property="IsMouseOver" Value="False">
+                        <Setter Property="Opacity" Value="0.8"></Setter>
+                    </Trigger>
+                    <Trigger Property="IsMouseOver" Value="True">
+                        <Setter Property="Opacity" Value="1"></Setter>
+                        <Setter Property="Cursor" Value="Hand" />
+                    </Trigger>
+                </Style.Triggers>
+            </Style>
+        </Grid.Style>
+
+        <Image Margin="0" Stretch="UniformToFill" HorizontalAlignment="Center" x:Name="Image" Source="{Binding Image, Mode=OneWay}"></Image>
+        <ProgressBar Margin="0" Foreground="LightSkyBlue" Background="Transparent"  Opacity="0.7" Height="{Binding Height, Source=Image}" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" Orientation="Vertical" Maximum="100" Minimum="0" Value="{Binding CurrentUploadPercentage, Mode=OneWay}" />
+
+        <!--<Button Opacity="0.5" VerticalAlignment="Top" HorizontalAlignment="Right" Margin="10" Style="{DynamicResource SquareButtonStyle}">
+            <Image Source="/Image/settings.png" Height="20" Width="20" ></Image>
+        </Button>-->
     </Grid>
 </UserControl>

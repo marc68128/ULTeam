@@ -6,6 +6,7 @@ using System.Windows.Input;
 using VideoTransfer.Data;
 using VideoTransfer.Helpers;
 using VideoTransfer.Model;
+using VideoTransfer.View;
 
 namespace VideoTransfer.ViewModel
 {
@@ -51,7 +52,7 @@ namespace VideoTransfer.ViewModel
 
         #region Commands
 
-        public ICommand InitializeCommand { get; private set; }
+        public ICommand NavigateCommand { get; private set; }
 
         #endregion
 
@@ -96,8 +97,8 @@ namespace VideoTransfer.ViewModel
             copier.OnComplete += () =>
             {
                 CurrentUploadPercentage = 0;
-                    //Update Db with new files and folders
-                    Skydiver.CameraItems.AddRange(addedItems);
+                //Update Db with new files and folders
+                Skydiver.CameraItems.AddRange(addedItems);
                 Context.Instance.SaveChanges();
             };
             copier.Copy();
@@ -110,10 +111,10 @@ namespace VideoTransfer.ViewModel
 
         private void InitCommands()
         {
-            InitializeCommand = new Command(_ =>
-            {
-                SkydiverInitializer.Initialize(Skydiver);
-            });
+            NavigateCommand = new Command(_ =>
+              {
+                  BreadcrumbHelper.GotoPage(new SkydiverSettingsPage(Id));
+              });
         }
 
         #endregion

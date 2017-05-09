@@ -1,4 +1,5 @@
-﻿using VideoTransfer.ViewModel;
+﻿using System.Windows.Input;
+using VideoTransfer.ViewModel;
 
 namespace VideoTransfer.UserControl
 {
@@ -16,5 +17,10 @@ namespace VideoTransfer.UserControl
         }
 
         #endregion
+
+        private void NavigateClick(object sender, MouseButtonEventArgs e)
+        {
+            (DataContext as SkydiverViewModel).NavigateCommand.Execute(null);
+        }
     }
 }
