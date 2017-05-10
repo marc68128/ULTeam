@@ -12,17 +12,18 @@ namespace VideoTransfer.Helpers
         #region Private fields
 
         private readonly List<Copy> _copies;
+        private readonly bool _deleteVideos;
         private long _totalLength, _totalBytes;
-        private int _copyInProgress;
+        private int _copyInProgress; 
 
         #endregion
 
         #region Constructors
 
-        public MultipleFileCopier(List<Copy> copies)
+        public MultipleFileCopier(List<Copy> copies, bool deleteVideos)
         {
             _copies = copies;
-
+            _deleteVideos = deleteVideos;
             OnProgressChanged += delegate { };
             OnComplete += delegate { };
         }
@@ -46,7 +47,15 @@ namespace VideoTransfer.Helpers
                 await Task.Run(() =>
                 {
                     Copy(copy.SourcePath, copy.DestinationPath);
-                });
+                }).ContinueWith(r =>
+                {
+                    if (r.Exception != null || !r.IsCompleted || !_deleteVideos) return;
+                    File.Delete(copy.SourcePath);
+                    foreach (var file in Directory.GetFiles(Path.GetDirectoryName(copy.SourcePath), Path.GetFileName(copy.SourcePath).Replace("MP4", "*")))
+                    {
+                        File.Delete(file);
+                    }
+                }); 
             }
         }
 

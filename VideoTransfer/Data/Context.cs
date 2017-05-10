@@ -1,6 +1,7 @@
 ﻿using Newtonsoft.Json;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Text;
 using VideoTransfer.Model;
 
@@ -32,6 +33,8 @@ namespace VideoTransfer.Data
         #region Properties
 
         public List<Skydiver> Skydivers { get; set; }
+
+        public int LastSkydiverId => Skydivers == null || !Skydivers.Any() ? -1 : Skydivers.Max(s => s.Id);
 
         #endregion
 

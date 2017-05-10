@@ -4,6 +4,8 @@ using System.IO;
 using System.Linq;
 using VideoTransfer.Data;
 using VideoTransfer.Helpers;
+using VideoTransfer.Model;
+using VideoTransfer.View;
 
 namespace VideoTransfer.ViewModel
 {
@@ -46,7 +48,7 @@ namespace VideoTransfer.ViewModel
                 OnPropertyChanged();
                 JumpNumberText = $"Saut {_jumpNumber}";
             }
-        }
+            }
         public string JumpNumberText
         {
             get => _jumpNumberText;
@@ -55,7 +57,7 @@ namespace VideoTransfer.ViewModel
                 _jumpNumberText = value;
                 OnPropertyChanged();
             }
-        }
+            }
         public bool ShowModal
         {
             get => _showModal;
@@ -64,7 +66,7 @@ namespace VideoTransfer.ViewModel
                 _showModal = value;
                 OnPropertyChanged();
             }
-        }
+            }
         public string ModalTitle
         {
             get => _modalTitle;
@@ -73,7 +75,7 @@ namespace VideoTransfer.ViewModel
                 _modalTitle = value;
                 OnPropertyChanged();
             }
-        }
+            }
         public string ModalMessage
         {
             get => _modalMessage;
@@ -82,12 +84,13 @@ namespace VideoTransfer.ViewModel
                 _modalMessage = value;
                 OnPropertyChanged();
             }
-        }
+            }
 
         #endregion
 
         #region Commands
 
+        public Command AddSkydiverCommand { get; set; }
         public Command HideModalCommand { get; set; }
         public Command NextJumpCommand { get; set; }
         public Command PreviousJumpCommand { get; set; }
@@ -133,6 +136,13 @@ namespace VideoTransfer.ViewModel
             HideModalCommand = new Command(o => ShowModal = false);
             NextJumpCommand = new Command(o => JumpNumber++);
             PreviousJumpCommand = new Command(o => JumpNumber--);
+            AddSkydiverCommand = new Command(_ =>
+            {
+                var skydiver = new Skydiver { Id = Context.Instance.LastSkydiverId + 1 };
+                Context.Instance.Skydivers.Add(skydiver);
+                Context.Instance.SaveChanges();
+                Skydivers.Add(new SkydiverViewModel(skydiver));
+            });
         }
 
         #endregion

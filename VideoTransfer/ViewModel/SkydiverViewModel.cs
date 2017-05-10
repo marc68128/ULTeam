@@ -69,10 +69,7 @@ namespace VideoTransfer.ViewModel
 
             if (!isSkydiverCam) return false;
 
-            var addedItems = IOHelper.GetAddedCameraItems(driveContent, Skydiver.CameraItems);
-            var removedItems = IOHelper.GetRemovedCameraItems(driveContent, Skydiver.CameraItems);
-
-            foreach (var removedItem in removedItems) Skydiver.CameraItems.Remove(Skydiver.CameraItems.First(ci => ci.Path == removedItem.Path));
+            var addedItems = IOHelper.GetAddedCameraItems(driveContent, Skydiver.CameraItems);        
 
             if (!addedItems.Any())
                 return true;
@@ -89,7 +86,7 @@ namespace VideoTransfer.ViewModel
             Directory.CreateDirectory(extPath);
 
             //Copy videos;
-            MultipleFileCopier copier = new MultipleFileCopier(videosArray.ToList().Select(s => new Copy(s, Path.Combine(extPath, Name + " (" + DateTime.Today.ToString("MM", CultureInfo.GetCultureInfo("fr-FR")) + "-" + DateTime.Today.Day + ") (Saut" + JumpNumber + ").mp4"))).ToList());
+            MultipleFileCopier copier = new MultipleFileCopier(videosArray.ToList().Select(s => new Copy(s, Path.Combine(extPath, Name + " (" + DateTime.Today.ToString("MM", CultureInfo.GetCultureInfo("fr-FR")) + "-" + DateTime.Today.Day + ") (Saut" + JumpNumber + ").mp4"))).ToList(), Skydiver.DeleteVideos);
             copier.OnProgressChanged += (double persentage, ref bool cancel) =>
             {
                 CurrentUploadPercentage = persentage;
@@ -97,9 +94,8 @@ namespace VideoTransfer.ViewModel
             copier.OnComplete += () =>
             {
                 CurrentUploadPercentage = 0;
-                //Update Db with new files and folders
-                Skydiver.CameraItems.AddRange(addedItems);
                 Context.Instance.SaveChanges();
+                SkydiverInitializer.Initialize(d.RootDirectory.Name, Skydiver); //UpdateDb
             };
             copier.Copy();
             return true;

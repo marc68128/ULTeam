@@ -8,16 +8,21 @@ namespace VideoTransfer.Helpers
 {
     public static class SkydiverInitializer
     {
-        #region Constructors
+        #region Public methods
 
         public static void Initialize(Skydiver s)
         {
             var drive = SelectDrive();
             if (drive == null) return;
-            var cameraItems = IOHelper.GetAllFilesAndFoldersRecursivly(drive);
+            Initialize(drive, s);
+        }
+
+        public static void Initialize(string drivePath, Skydiver s)
+        {
+            var cameraItems = IOHelper.GetAllFilesAndFoldersRecursivly(drivePath);
             Context.Instance.Skydivers.Single(sd => sd.Id == s.Id).CameraItems = cameraItems;
             Context.Instance.SaveChanges();
-            AddDriveIdentifier(drive, s);
+            AddDriveIdentifier(drivePath, s);
         }
 
         #endregion
