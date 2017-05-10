@@ -21,7 +21,7 @@ namespace VideoTransfer.Model
         public List<CameraItem> CameraItems { get; set; }
         public string IdentifierFileName
         {
-            get => string.IsNullOrWhiteSpace(_identifierFileName) ? _identifierFileName = $"VideoTransfer_{Name}_{new Random().Next(0, 9999)}.donotremove" : _identifierFileName;
+            get => string.IsNullOrWhiteSpace(_identifierFileName) ? _identifierFileName = $"VideoTransfer_{Name}_{new Random().Next(0, 9999)}.donotremove" : _identifierFileName; //TODO : check if CameraItems is initialize before set _identifierFileName
             set => _identifierFileName = value;
         }
 

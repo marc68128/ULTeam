@@ -21,7 +21,9 @@
             </Style>
         </Grid.Style>
 
+        <Image Margin="0" Stretch="Fill" HorizontalAlignment="Center" Source="/Image/noImage.jpg"></Image>
         <Image Margin="0" Stretch="UniformToFill" HorizontalAlignment="Center" x:Name="Image" Source="{Binding Image, Mode=OneWay}"></Image>
+        <TextBlock Margin="5,20" FontSize="20" FontWeight="Bold" TextAlignment="Center" VerticalAlignment="Bottom" Text="{Binding Name}"></TextBlock>
         <ProgressBar Margin="0" Foreground="LightSkyBlue" Background="Transparent"  Opacity="0.7" Height="{Binding Height, Source=Image}" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" Orientation="Vertical" Maximum="100" Minimum="0" Value="{Binding CurrentUploadPercentage, Mode=OneWay}" />
 
         <!--<Button Opacity="0.5" VerticalAlignment="Top" HorizontalAlignment="Right" Margin="10" Style="{DynamicResource SquareButtonStyle}">
